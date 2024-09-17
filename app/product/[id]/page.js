@@ -26,10 +26,6 @@ export default function ProductPage({ params }) {
     fetchProduct();
   }, [id]);
 
-  /**
-   * Handles navigation to the previous page.
-   * Uses router if available, else falls back to window.history.
-   */
   function goBack() {
     if (router) {
       router.back();
@@ -38,7 +34,6 @@ export default function ProductPage({ params }) {
     }
   }
 
-  // Sort reviews by selected criteria (date or rating)
   const sortedReviews = product?.reviews.sort((a, b) => {
     if (reviewSort === 'date') {
       return new Date(b.date) - new Date(a.date);
@@ -47,19 +42,16 @@ export default function ProductPage({ params }) {
     }
   });
 
-  // Error handling
   if (error) {
     return <div className="text-red-500 text-center p-4">Error: {error}</div>;
   }
 
-  // Loading state
   if (!product) {
     return <div className="text-gray-500 text-center p-4">Loading...</div>;
   }
 
   return (
     <div className="py-12">
-      {/* Go back button */}
       <button
         onClick={goBack}
         className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 mb-8 transition-colors duration-300"
@@ -81,7 +73,6 @@ export default function ProductPage({ params }) {
         <span className="font-semibold">Go Back</span>
       </button>
 
-      {/* Product details */}
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="md:flex">
           <div className="md:w-1/2">
@@ -118,7 +109,6 @@ export default function ProductPage({ params }) {
         </div>
       </div>
 
-      {/* Reviews section */}
       <div className="mt-12">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-3xl font-bold text-indigo-800">Customer Reviews</h2>

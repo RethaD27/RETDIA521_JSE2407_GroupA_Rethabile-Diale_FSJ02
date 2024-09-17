@@ -5,11 +5,11 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   }
 
   return (
-    <div className="flex justify-center items-center space-x-2 my-12">
+    <div className="flex justify-center items-center space-x-2 my-8">
       {currentPage > 1 && (
-        <button 
+        <button
           onClick={() => onPageChange(currentPage - 1)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
           Previous
         </button>
@@ -18,19 +18,19 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           key={number}
           onClick={() => onPageChange(number)}
-          className={`${
-            currentPage === number
+          className={`px-4 py-2 rounded-md ${
+            number === currentPage
               ? 'bg-indigo-600 text-white'
               : 'bg-white text-indigo-600 hover:bg-indigo-100'
-          } font-bold py-2 px-4 rounded transition-colors duration-300`}
+          }`}
         >
           {number}
         </button>
       ))}
       {currentPage < totalPages && (
-        <button 
+        <button
           onClick={() => onPageChange(currentPage + 1)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
           Next
         </button>

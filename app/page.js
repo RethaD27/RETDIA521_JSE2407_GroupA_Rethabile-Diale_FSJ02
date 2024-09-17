@@ -20,8 +20,8 @@ export default function Home() {
   const page = Number(searchParams.get('page')) || 1;
   const search = searchParams.get('search') || '';
   const category = searchParams.get('category') || '';
-  const sortBy = searchParams.get('sortBy') || 'price';
-  const sortOrder = searchParams.get('sortOrder') || 'asc';
+  const sortBy = searchParams.get('sortBy') || '';
+  const sortOrder = searchParams.get('sortOrder') || '';
 
   useEffect(() => {
     async function loadData() {
@@ -39,6 +39,7 @@ export default function Home() {
       } catch (e) {
         setError(e.message);
       } finally {
+        console.log(products)
         setLoading(false);
       }
     }
@@ -85,11 +86,7 @@ export default function Home() {
         <div className="text-center p-4">Loading...</div>
       ) : (
         <>
-          {products.length > 0 ? (
-            <ProductGrid products={products} />
-          ) : (
-            <div className="text-center p-4">No products found.</div>
-          )}
+          <ProductGrid products={products} />
           {totalPages > 1 && (
             <Pagination
               currentPage={page}

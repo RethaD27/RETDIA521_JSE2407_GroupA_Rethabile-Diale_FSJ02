@@ -53,6 +53,7 @@ export default function FilterSort({
           }}
           className="p-2 border rounded"
         >
+          <option value="">Price: Default</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
           <option value="title-asc">Title: A-Z</option>

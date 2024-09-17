@@ -1,6 +1,5 @@
 const API_BASE_URL = 'https://next-ecommerce-api.vercel.app';
 
-// Fetch products with pagination, search, category filter, sorting
 export async function fetchProducts(params = {}) {
   const {
     page = 1,
@@ -15,6 +14,7 @@ export async function fetchProducts(params = {}) {
     page: page.toString(),
     limit: limit.toString(),
     search,
+    // skip,
     category,
     sortBy,
     sortOrder
@@ -28,13 +28,12 @@ export async function fetchProducts(params = {}) {
 
   const data = await response.json();
   return {
-    products: data.products || [],
+    products: data || [],
     totalPages: data.total ? Math.ceil(data.total / limit) : 1,
     totalProducts: data.total || 0
   };
 }
 
-// Fetch single product by ID
 export async function fetchProductById(id) {
   const response = await fetch(`${API_BASE_URL}/products/${id}`);
   
@@ -45,7 +44,6 @@ export async function fetchProductById(id) {
   return response.json();
 }
 
-// Fetch all product categories
 export async function fetchCategories() {
   const response = await fetch(`${API_BASE_URL}/categories`);
   
