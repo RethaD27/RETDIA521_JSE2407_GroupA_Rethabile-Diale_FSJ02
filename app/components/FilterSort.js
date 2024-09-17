@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function FilterSort({
   categories,
@@ -12,6 +12,10 @@ export default function FilterSort({
   onReset
 }) {
   const [search, setSearch] = useState(currentSearch);
+
+  useEffect(() => {
+    setSearch(currentSearch);
+  }, [currentSearch]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -49,9 +53,10 @@ export default function FilterSort({
           }}
           className="p-2 border rounded"
         >
-          <option value="-asc">Sort by</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
+          <option value="title-asc">Title: A-Z</option>
+          <option value="title-desc">Title: Z-A</option>
         </select>
         <button onClick={onReset} className="bg-gray-200 p-2 rounded">Reset All</button>
       </div>

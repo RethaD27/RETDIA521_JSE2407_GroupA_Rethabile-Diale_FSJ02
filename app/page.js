@@ -15,11 +15,12 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   const page = Number(searchParams.get('page')) || 1;
   const search = searchParams.get('search') || '';
   const category = searchParams.get('category') || '';
-  const sortBy = searchParams.get('sortBy') || '';
+  const sortBy = searchParams.get('sortBy') || 'price';
   const sortOrder = searchParams.get('sortOrder') || 'asc';
 
   useEffect(() => {
@@ -32,7 +33,9 @@ export default function Home() {
         ]);
         setProducts(productsData.products);
         setTotalPages(productsData.totalPages);
+        setTotalProducts(productsData.totalProducts);
         setCategories(categoriesData);
+        setError(null);
       } catch (e) {
         setError(e.message);
       } finally {
@@ -54,6 +57,12 @@ export default function Home() {
     router.push(`/?${updatedSearchParams.toString()}`);
   };
 
+  const handleFilter = (newCategory) => updateUrl({ category: newCategory, page: 1 });
+  const handleSort = (newSortBy, newSortOrder) => updateUrl({ sortBy: newSortBy, sortOrder: newSortOrder, page: 1 });
+  const handleSearch = (newSearch) => updateUrl({ search: newSearch, page: 1 });
+  const handlePageChange = (newPage) => updateUrl({ page: newPage });
+  const handleReset = () => router.push('/');
+
   if (error) {
     return <div className="text-red-600 text-center p-4 bg-red-100 rounded-lg">Error: {error}</div>;
   }
@@ -67,10 +76,10 @@ export default function Home() {
         currentSortBy={sortBy}
         currentSortOrder={sortOrder}
         currentSearch={search}
-        onFilter={(newCategory) => updateUrl({ category: newCategory, page: 1 })}
-        onSort={(newSortBy, newSortOrder) => updateUrl({ sortBy: newSortBy, sortOrder: newSortOrder, page: 1 })}
-        onSearch={(newSearch) => updateUrl({ search: newSearch, page: 1 })}
-        onReset={() => router.push('/')}
+        onFilter={handleFilter}
+        onSort={handleSort}
+        onSearch={handleSearch}
+        onReset={handleReset}
       />
       {loading ? (
         <div className="text-center p-4">Loading...</div>
@@ -85,7 +94,7 @@ export default function Home() {
             <Pagination
               currentPage={page}
               totalPages={totalPages}
-              onPageChange={(newPage) => updateUrl({ page: newPage })}
+              onPageChange={handlePageChange}
             />
           )}
         </>
