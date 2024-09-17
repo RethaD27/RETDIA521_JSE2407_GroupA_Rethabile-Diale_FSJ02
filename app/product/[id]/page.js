@@ -1,26 +1,19 @@
-'use client'; 
+'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { fetchProductById } from '../../api';
 import ImageGallery from '../../components/ImageGallery';
 import Reviews from '../../components/Reviews';
 
-/**
- * ProductPage component displays detailed information about a single product.
- * It fetches product data based on the provided product ID, handles errors,
- * and provides a button to navigate back to the previous page.
- * 
- * @param {Object} props - The props for the component.
- * @param {Object} props.params - Parameters for the component.
- * @param {string} props.params.id - The ID of the product to fetch and display.
- * @returns {JSX.Element} The ProductPage component.
- */
 export default function ProductPage({ params }) {
   const { id } = params;
-  const [product, setProduct] = React.useState(null);
-  const [error, setError] = React.useState(null);
+  const router = useRouter();
+  const [product, setProduct] = useState(null);
+  const [error, setError] = useState(null);
+  const [reviewSort, setReviewSort] = useState('date');
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchProduct() {
       try {
         const fetchedProduct = await fetchProductById(id);
@@ -35,22 +28,38 @@ export default function ProductPage({ params }) {
 
   /**
    * Handles navigation to the previous page.
+   * Uses router if available, else falls back to window.history.
    */
   function goBack() {
-    window.history.back();
+    if (router) {
+      router.back();
+    } else {
+      window.history.back();
+    }
   }
 
+  // Sort reviews by selected criteria (date or rating)
+  const sortedReviews = product?.reviews.sort((a, b) => {
+    if (reviewSort === 'date') {
+      return new Date(b.date) - new Date(a.date);
+    } else {
+      return b.rating - a.rating;
+    }
+  });
+
+  // Error handling
   if (error) {
     return <div className="text-red-500 text-center p-4">Error: {error}</div>;
   }
 
+  // Loading state
   if (!product) {
     return <div className="text-gray-500 text-center p-4">Loading...</div>;
   }
 
   return (
     <div className="py-12">
-      {/* Button to go back to the previous page */}
+      {/* Go back button */}
       <button
         onClick={goBack}
         className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 mb-8 transition-colors duration-300"
@@ -72,6 +81,7 @@ export default function ProductPage({ params }) {
         <span className="font-semibold">Go Back</span>
       </button>
 
+      {/* Product details */}
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="md:flex">
           <div className="md:w-1/2">
@@ -107,7 +117,22 @@ export default function ProductPage({ params }) {
           </div>
         </div>
       </div>
-      <Reviews reviews={product.reviews} />
+
+      {/* Reviews section */}
+      <div className="mt-12">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-3xl font-bold text-indigo-800">Customer Reviews</h2>
+          <select
+            value={reviewSort}
+            onChange={(e) => setReviewSort(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="date">Sort by Date</option>
+            <option value="rating">Sort by Rating</option>
+          </select>
+        </div>
+        <Reviews reviews={sortedReviews} />
+      </div>
     </div>
   );
 }

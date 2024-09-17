@@ -1,27 +1,58 @@
-import { fetchProducts } from './api';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { fetchProducts, fetchCategories } from './api';
 import ProductGrid from './components/ProductGrid';
 import Pagination from './components/Pagination';
+import FilterSort from './components/FilterSort';
 
-/**
- * Renders the home page with products and pagination.
- *
- * @param {Object} props - The properties passed to the Home component.
- * @param {Object} props.searchParams - The search parameters for the current page.
- * @param {string} [props.searchParams.page] - The current page number from the query string.
- * @returns {JSX.Element} - The rendered home page component with product grid and pagination.
- */
-export default async function Home({ searchParams }) {
-  const page = Number(searchParams.page) || 1;
-  let products;
-  let error;
+export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
 
-  try {
-    // Fetches the list of products for the current page
-    products = await fetchProducts(page);
-  } catch (e) {
-    // Captures the error if the product fetching fails
-    error = e.message;
-  }
+  const page = Number(searchParams.get('page')) || 1;
+  const search = searchParams.get('search') || '';
+  const category = searchParams.get('category') || '';
+  const sortBy = searchParams.get('sortBy') || '';
+  const sortOrder = searchParams.get('sortOrder') || 'asc';
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const [productsData, categoriesData] = await Promise.all([
+          fetchProducts({ page, search, category, sortBy, sortOrder }),
+          fetchCategories()
+        ]);
+        setProducts(productsData.products);
+        setTotalPages(productsData.totalPages);
+        setCategories(categoriesData);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [page, search, category, sortBy, sortOrder]);
+
+  const updateUrl = (newParams) => {
+    const updatedSearchParams = new URLSearchParams(searchParams);
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        updatedSearchParams.set(key, value);
+      } else {
+        updatedSearchParams.delete(key);
+      }
+    });
+    router.push(`/?${updatedSearchParams.toString()}`);
+  };
 
   if (error) {
     return <div className="text-red-600 text-center p-4 bg-red-100 rounded-lg">Error: {error}</div>;
@@ -30,10 +61,35 @@ export default async function Home({ searchParams }) {
   return (
     <div>
       <h1 className="text-4xl font-bold text-indigo-800 mb-8 text-center">Discover Amazing Products</h1>
-      {/* Display the products in a grid */}
-      <ProductGrid products={products} />
-      {/* Pagination component, checks if there are more products */}
-      <Pagination currentPage={page} hasMore={products.length === 20} />
+      <FilterSort
+        categories={categories}
+        currentCategory={category}
+        currentSortBy={sortBy}
+        currentSortOrder={sortOrder}
+        currentSearch={search}
+        onFilter={(newCategory) => updateUrl({ category: newCategory, page: 1 })}
+        onSort={(newSortBy, newSortOrder) => updateUrl({ sortBy: newSortBy, sortOrder: newSortOrder, page: 1 })}
+        onSearch={(newSearch) => updateUrl({ search: newSearch, page: 1 })}
+        onReset={() => router.push('/')}
+      />
+      {loading ? (
+        <div className="text-center p-4">Loading...</div>
+      ) : (
+        <>
+          {products.length > 0 ? (
+            <ProductGrid products={products} />
+          ) : (
+            <div className="text-center p-4">No products found.</div>
+          )}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={(newPage) => updateUrl({ page: newPage })}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }
