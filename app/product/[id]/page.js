@@ -11,7 +11,7 @@ export default function ProductPage({ params }) {
   const router = useRouter();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
-  const [reviewSort, setReviewSort] = useState('date');
+  const [reviewSort, setReviewSort] = useState('date-desc');
 
   useEffect(() => {
     async function fetchProduct() {
@@ -34,11 +34,18 @@ export default function ProductPage({ params }) {
     }
   }
 
-  const sortedReviews = product?.reviews.sort((a, b) => {
-    if (reviewSort === 'date') {
-      return new Date(b.date) - new Date(a.date);
-    } else {
-      return b.rating - a.rating;
+  const sortedReviews = product?.reviews.slice().sort((a, b) => {
+    switch (reviewSort) {
+      case 'date-desc':
+        return new Date(b.date) - new Date(a.date);
+      case 'date-asc':
+        return new Date(a.date) - new Date(b.date);
+      case 'rating-desc':
+        return b.rating - a.rating;
+      case 'rating-asc':
+        return a.rating - b.rating;
+      default:
+        return 0;
     }
   });
 
@@ -117,9 +124,10 @@ export default function ProductPage({ params }) {
             onChange={(e) => setReviewSort(e.target.value)}
             className="p-2 border rounded"
           >
-            <option value="/">Default</option>
-            <option value="date">Sort by Date</option>
-            <option value="rating">Sort by Rating</option>
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="rating-desc">Highest Rating First</option>
+            <option value="rating-asc">Lowest Rating First</option>
           </select>
         </div>
         <Reviews reviews={sortedReviews} />
