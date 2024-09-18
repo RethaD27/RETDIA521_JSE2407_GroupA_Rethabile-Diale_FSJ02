@@ -29,7 +29,7 @@ export async function fetchProducts(params = {}) {
   const data = await response.json();
   return {
     products: data || [],
-    totalPages: data.total ? Math.ceil(data.total / limit) : 1,
+    totalPages: data.totalPages || 1,
     totalProducts: data.total || 0
   };
 }

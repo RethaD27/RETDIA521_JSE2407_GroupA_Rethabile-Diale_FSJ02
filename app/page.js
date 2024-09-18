@@ -15,6 +15,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState('');
   const [totalProducts, setTotalProducts] = useState(0);
 
   const page = Number(searchParams.get('page')) || 1;
@@ -39,7 +40,6 @@ export default function Home() {
       } catch (e) {
         setError(e.message);
       } finally {
-        console.log(products)
         setLoading(false);
       }
     }
@@ -87,13 +87,11 @@ export default function Home() {
       ) : (
         <>
           <ProductGrid products={products} />
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </>
       )}
     </div>
