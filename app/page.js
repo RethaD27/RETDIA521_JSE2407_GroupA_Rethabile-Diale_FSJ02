@@ -15,7 +15,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
   const page = Number(searchParams.get('page')) || 1;
@@ -34,6 +34,7 @@ export default function Home() {
         ]);
         setProducts(productsData.products);
         setTotalPages(productsData.totalPages);
+        setCurrentPage(page);
         setTotalProducts(productsData.totalProducts);
         setCategories(categoriesData);
         setError(null);
@@ -90,6 +91,7 @@ export default function Home() {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
+            hasMore={products.length === 20}
             onPageChange={handlePageChange}
           />
         </>
