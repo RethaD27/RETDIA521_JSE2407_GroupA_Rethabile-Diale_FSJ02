@@ -12,7 +12,6 @@
 export default function Reviews({ reviews }) {
   return (
     <div className="mt-12">
-      <h2 className="text-3xl font-bold mb-6 text-indigo-800">Customer Reviews</h2>
       <div className="space-y-6">
         {reviews.map((review, index) => (
           <div

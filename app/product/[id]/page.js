@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchProductById } from '../../api';
 import ImageGallery from '../../components/ImageGallery';
@@ -117,6 +117,7 @@ export default function ProductPage({ params }) {
             onChange={(e) => setReviewSort(e.target.value)}
             className="p-2 border rounded"
           >
+            <option value="/">Default</option>
             <option value="date">Sort by Date</option>
             <option value="rating">Sort by Rating</option>
           </select>
