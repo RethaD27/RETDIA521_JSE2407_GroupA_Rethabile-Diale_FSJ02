@@ -1,30 +1,72 @@
+// ProductPage (Server Component with SSR)
+
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
+import { fetchProductById } from '../../api';
+import ProductDetails from '../../components/ProductDetails';
+
+async function getProduct(id) {
+  const res = await fetchProductById(id);
+  if (!res) notFound();
+  return res;
+}
+
+export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  return {
+    title: product.title,
+    description: product.description,
+    openGraph: {
+      title: product.title,
+      description: product.description,
+      images: [{ url: product.images[0], width: 800, height: 600, alt: product.title }],
+    },
+  };
+}
+
+export default async function ProductPage({ params }) {
+  const product = await getProduct(params.id);
+
+  return (
+    <div className="py-12">
+      <Suspense fallback={<div>Loading product details...</div>}>
+        <ProductDetails product={product} />
+      </Suspense>
+    </div>
+  );
+}
+
+// ProductDetails (Client Component)
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchProductById } from '../../api';
-import ImageGallery from '../../components/ImageGallery';
-import Reviews from '../../components/Reviews';
+import ImageGallery from './ImageGallery';
+import Reviews from './Reviews';
 
-export default function ProductPage({ params }) {
-  const { id } = params;
+export default function ProductDetails({ product }) {
   const router = useRouter();
-  const [product, setProduct] = useState(null);
-  const [error, setError] = useState(null);
   const [reviewSort, setReviewSort] = useState('date-desc');
+  const [sortedReviews, setSortedReviews] = useState(product.reviews);
 
   useEffect(() => {
-    async function fetchProduct() {
-      try {
-        const fetchedProduct = await fetchProductById(id);
-        setProduct(fetchedProduct);
-      } catch (e) {
-        setError(e.message);
+    const sorted = product?.reviews.slice().sort((a, b) => {
+      switch (reviewSort) {
+        case 'date-desc':
+          return new Date(b.date) - new Date(a.date);
+        case 'date-asc':
+          return new Date(a.date) - new Date(b.date);
+        case 'rating-desc':
+          return b.rating - a.rating;
+        case 'rating-asc':
+          return a.rating - b.rating;
+        default:
+          return 0;
       }
-    }
-
-    fetchProduct();
-  }, [id]);
+    });
+    setSortedReviews(sorted);
+  }, [reviewSort, product.reviews]);
 
   function goBack() {
     if (router) {
@@ -34,31 +76,8 @@ export default function ProductPage({ params }) {
     }
   }
 
-  const sortedReviews = product?.reviews.slice().sort((a, b) => {
-    switch (reviewSort) {
-      case 'date-desc':
-        return new Date(b.date) - new Date(a.date);
-      case 'date-asc':
-        return new Date(a.date) - new Date(b.date);
-      case 'rating-desc':
-        return b.rating - a.rating;
-      case 'rating-asc':
-        return a.rating - b.rating;
-      default:
-        return 0;
-    }
-  });
-
-  if (error) {
-    return <div className="text-red-500 text-center p-4">Error: {error}</div>;
-  }
-
-  if (!product) {
-    return <div className="text-gray-500 text-center p-4">Loading...</div>;
-  }
-
   return (
-    <div className="py-12">
+    <div>
       <button
         onClick={goBack}
         className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 mb-8 transition-colors duration-300"
