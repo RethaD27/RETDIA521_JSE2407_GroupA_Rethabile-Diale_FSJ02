@@ -1,83 +1,59 @@
-// ProductPage (Server Component with SSR)
-
-import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
-import { fetchProductById } from '../../api';
-import ProductDetails from '../../components/ProductDetails';
-
-async function getProduct(id) {
-  const res = await fetchProductById(id);
-  if (!res) notFound();
-  return res;
-}
-
-export async function generateMetadata({ params }) {
-  const product = await getProduct(params.id);
-  return {
-    title: product.title,
-    description: product.description,
-    openGraph: {
-      title: product.title,
-      description: product.description,
-      images: [{ url: product.images[0], width: 800, height: 600, alt: product.title }],
-    },
-  };
-}
-
-export default async function ProductPage({ params }) {
-  const product = await getProduct(params.id);
-
-  return (
-    <div className="py-12">
-      <Suspense fallback={<div>Loading product details...</div>}>
-        <ProductDetails product={product} />
-      </Suspense>
-    </div>
-  );
-}
-
-// ProductDetails (Client Component)
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import ImageGallery from './ImageGallery';
-import Reviews from './Reviews';
+import Image from 'next/image';
+import ImageGallery from '../../components/ImageGallery';
+import Reviews from '../../components/Reviews';
+import { fetchProductById } from '@/app/api';
 
-export default function ProductDetails({ product }) {
+export default function ProductPage({ params }) {
   const router = useRouter();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [reviewSort, setReviewSort] = useState('date-desc');
-  const [sortedReviews, setSortedReviews] = useState(product.reviews);
 
   useEffect(() => {
-    const sorted = product?.reviews.slice().sort((a, b) => {
-      switch (reviewSort) {
-        case 'date-desc':
-          return new Date(b.date) - new Date(a.date);
-        case 'date-asc':
-          return new Date(a.date) - new Date(b.date);
-        case 'rating-desc':
-          return b.rating - a.rating;
-        case 'rating-asc':
-          return a.rating - b.rating;
-        default:
-          return 0;
+    async function loadProduct() {
+      try {
+        const data = await fetchProductById(params.id);
+        setProduct(data);
+      } catch (error) {
+        console.error('Failed to fetch product:', error);
+      } finally {
+        setLoading(false);
       }
-    });
-    setSortedReviews(sorted);
-  }, [reviewSort, product.reviews]);
+    }
+
+    loadProduct();
+  }, [params.id]);
 
   function goBack() {
-    if (router) {
-      router.back();
-    } else {
-      window.history.back();
-    }
+    router.back();
   }
 
+
+  if (!product) {
+    return <div className="text-gray-500 text-center p-4">Loading...</div>;
+  }
+
+  const sortedReviews = product.reviews.slice().sort((a, b) => {
+    switch (reviewSort) {
+      case 'date-desc':
+        return new Date(b.date) - new Date(a.date);
+      case 'date-asc':
+        return new Date(a.date) - new Date(b.date);
+      case 'rating-desc':
+        return b.rating - a.rating;
+      case 'rating-asc':
+        return a.rating - b.rating;
+      default:
+        return 0;
+    }
+  });
+
   return (
-    <div>
+    <div className="py-12">
       <button
         onClick={goBack}
         className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 mb-8 transition-colors duration-300"
