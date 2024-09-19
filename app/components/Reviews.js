@@ -10,28 +10,36 @@
  * @returns {JSX.Element} - A component that renders a list of customer reviews.
  */
 export default function Reviews({ reviews }) {
-  return (
-    <div className="mt-12">
-      <div className="space-y-6">
-        {reviews.map((review, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-md p-6 transition-transform duration-300 hover:scale-105"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <span className="font-semibold text-lg text-indigo-700">{review.reviewerName}</span>
-              <span className="text-sm text-purple-600">{new Date(review.date).toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center mb-2">
-              <div className="text-yellow-500 mr-2">
-                {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-              </div>
-              <span className="text-purple-700">{review.rating} / 5</span>
-            </div>
-            <p className="text-gray-700">{review.comment}</p>
-          </div>
+  const renderStars = (rating) => {
+    return (
+      <div className="flex text-yellow-400">
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className={`text-2xl ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+            ★
+          </span>
         ))}
       </div>
+    );
+  };
+
+  return (
+    <div className="space-y-8">
+      {reviews.map((review, index) => (
+        <div
+          key={index}
+          className="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg"
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+            <span className="font-semibold text-lg text-indigo-700 mb-2 sm:mb-0">{review.reviewerName}</span>
+            <span className="text-sm text-purple-600">{new Date(review.date).toLocaleDateString()}</span>
+          </div>
+          <div className="flex items-center mb-4">
+            {renderStars(review.rating)}
+            <span className="ml-2 text-purple-700 font-semibold">{review.rating} / 5</span>
+          </div>
+          <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+        </div>
+      ))}
     </div>
   );
 }
