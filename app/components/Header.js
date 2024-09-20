@@ -25,12 +25,12 @@ export default function Header() {
             </li>
             <li>
               <Link href="/categories" className="text-white hover:text-yellow-300 transition-colors duration-300 text-lg font-semibold">
-                Categories
+                Cart
               </Link>
             </li>
             <li>
               <Link href="/cart" className="text-white hover:text-yellow-300 transition-colors duration-300 text-lg font-semibold">
-                Cart
+                Login
               </Link>
             </li>
           </ul>
