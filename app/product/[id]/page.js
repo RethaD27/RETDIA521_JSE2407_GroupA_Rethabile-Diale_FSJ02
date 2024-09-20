@@ -7,6 +7,15 @@ import ImageGallery from '../../components/ImageGallery';
 import Reviews from '../../components/Reviews';
 import { fetchProductById } from '@/app/api';
 
+/**
+ * Fetches and displays the details of a specific product.
+ * It includes product details, image gallery, and reviews.
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.params - The route parameters.
+ * @param {string} props.params.id - The ID of the product.
+ * @returns {JSX.Element} The product details page.
+ */
 export default function ProductPage({ params }) {
   const router = useRouter();
   const [product, setProduct] = useState(null);
@@ -14,6 +23,10 @@ export default function ProductPage({ params }) {
   const [reviewSort, setReviewSort] = useState('date-desc');
 
   useEffect(() => {
+    /**
+     * Fetches the product data by its ID.
+     * Handles loading state and errors.
+     */
     async function loadProduct() {
       try {
         const data = await fetchProductById(params.id);
@@ -28,6 +41,9 @@ export default function ProductPage({ params }) {
     loadProduct();
   }, [params.id]);
 
+  /**
+   * Navigates the user back to the previous page.
+   */
   function goBack() {
     router.back();
   }
@@ -44,6 +60,11 @@ export default function ProductPage({ params }) {
     return <div className="text-gray-500 text-center p-4">Product not found.</div>;
   }
 
+  /**
+   * Sorts reviews based on selected sort criteria.
+   * @param {Array<Object>} product.reviews - The reviews to be sorted.
+   * @returns {Array<Object>} The sorted reviews.
+   */
   const sortedReviews = product.reviews.slice().sort((a, b) => {
     switch (reviewSort) {
       case 'date-desc':

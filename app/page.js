@@ -7,6 +7,13 @@ import ProductGrid from './components/ProductGrid';
 import Pagination from './components/Pagination';
 import FilterSort from './components/FilterSort';
 
+/**
+ * Home component for the product listing page.
+ * It manages filtering, sorting, pagination, and searching products.
+ * 
+ * @component
+ * @returns {JSX.Element} The product listing page.
+ */
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,13 +31,19 @@ export default function Home() {
   const sortBy = searchParams.get('sortBy') || '';
   const sortOrder = searchParams.get('sortOrder') || '';
 
+  /**
+   * Fetches products and categories data based on filters and updates the state.
+   * 
+   * @async
+   * @function loadData
+   */
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
         const [productsData, categoriesData] = await Promise.all([
           fetchProducts({ page, search, category, sortBy, sortOrder }),
-          fetchCategories()
+          fetchCategories(),
         ]);
         setProducts(productsData.products);
         setTotalPages(productsData.totalPages);
@@ -47,6 +60,11 @@ export default function Home() {
     loadData();
   }, [page, search, category, sortBy, sortOrder]);
 
+  /**
+   * Updates the URL with the new filter, sort, or page parameters.
+   * 
+   * @param {Object} newParams - The new parameters to update in the URL.
+   */
   const updateUrl = (newParams) => {
     const updatedSearchParams = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, value]) => {
@@ -59,10 +77,38 @@ export default function Home() {
     router.push(`/?${updatedSearchParams.toString()}`);
   };
 
+  /**
+   * Handles category filtering.
+   * 
+   * @param {string} newCategory - The selected category for filtering.
+   */
   const handleFilter = (newCategory) => updateUrl({ category: newCategory, page: 1 });
+
+  /**
+   * Handles sorting of products.
+   * 
+   * @param {string} newSortBy - The field to sort by.
+   * @param {string} newSortOrder - The order of sorting (asc or desc).
+   */
   const handleSort = (newSortBy, newSortOrder) => updateUrl({ sortBy: newSortBy, sortOrder: newSortOrder, page: 1 });
+
+  /**
+   * Handles search functionality.
+   * 
+   * @param {string} newSearch - The search query string.
+   */
   const handleSearch = (newSearch) => updateUrl({ search: newSearch, page: 1 });
+
+  /**
+   * Handles page changes for pagination.
+   * 
+   * @param {number} newPage - The new page number.
+   */
   const handlePageChange = (newPage) => updateUrl({ page: newPage });
+
+  /**
+   * Resets all filters, sorting, and search queries.
+   */
   const handleReset = () => router.push('/');
 
   if (error) {

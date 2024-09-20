@@ -2,17 +2,36 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
+/**
+ * ImageGallery component to display an image gallery with thumbnails and navigation.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {string[]} props.images - An array of image URLs to be displayed in the gallery.
+ * @returns {JSX.Element} The rendered ImageGallery component.
+ */
 export default function ImageGallery({ images }) {
   const [currentImage, setCurrentImage] = useState(0);
 
+  /**
+   * Navigate to the next image in the gallery.
+   */
   const nextImage = () => {
     setCurrentImage((prev) => (prev + 1) % images.length);
   };
 
+  /**
+   * Navigate to the previous image in the gallery.
+   */
   const prevImage = () => {
     setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  /**
+   * Handle thumbnail click to display the selected image.
+   *
+   * @param {number} index - The index of the image to display.
+   */
   const handleImageClick = (index) => {
     setCurrentImage(index);
   };

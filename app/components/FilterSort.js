@@ -1,5 +1,21 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * FilterSort component for filtering, sorting, and searching products.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array<string>} props.categories - List of product categories.
+ * @param {string} props.currentCategory - Currently selected category.
+ * @param {string} props.currentSortBy - Currently selected sort criterion.
+ * @param {string} props.currentSortOrder - Currently selected sort order (asc/desc).
+ * @param {string} props.currentSearch - Current search query.
+ * @param {Function} props.onFilter - Callback function for filtering products.
+ * @param {Function} props.onSort - Callback function for sorting products.
+ * @param {Function} props.onSearch - Callback function for searching products.
+ * @param {Function} props.onReset - Callback function for resetting filters and search.
+ *
+ * @returns {JSX.Element} The rendered FilterSort component.
+ */
 export default function FilterSort({
   categories,
   currentCategory,
