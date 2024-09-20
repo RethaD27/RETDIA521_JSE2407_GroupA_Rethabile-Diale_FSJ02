@@ -32,7 +32,7 @@ This project leverages modern web technologies to build a high-performance and r
 - **React**: For building interactive user interfaces.
 - **Tailwind CSS**: Utility-first CSS framework for styling the components.
 - **JSDoc**: Used to document the code for better understanding and maintainability.
-- **API**: Deployment platform for hosting Next.js applications
+- **API**: Custom API for fetching products and handling product details.
 
 ## Features
 
