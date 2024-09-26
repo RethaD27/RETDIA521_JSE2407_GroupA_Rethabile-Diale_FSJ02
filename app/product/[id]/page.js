@@ -5,6 +5,16 @@ import ReviewsSection from './ReviewsSection';
 import { fetchProductById } from '@/app/api';
 import GoBackButton from '../../components/GoBackButton.js'; // Import the GoBackButton
 
+/**
+ * Generates metadata for the product page based on the product data.
+ *
+ * @async
+ * @function generateMetadata
+ * @param {Object} context - The context object.
+ * @param {Object} context.params - The route parameters.
+ * @param {string} context.params.id - The product ID from the URL.
+ * @returns {Promise<Object>} Metadata object containing the page title and description.
+ */
 export async function generateMetadata({ params }) {
   const product = await fetchProductById(params.id);
 
@@ -21,12 +31,36 @@ export async function generateMetadata({ params }) {
   };
 }
 
+/**
+ * Fetches product data by ID from the API.
+ *
+ * @async
+ * @function fetchProductData
+ * @param {string} id - The product ID to fetch.
+ * @throws Will throw an error if the product is not found.
+ * @returns {Promise<Object>} The product data.
+ */
 async function fetchProductData(id) {
   const product = await fetchProductById(id);
   if (!product) notFound();
   return product;
 }
 
+/**
+ * Renders the product detail page with product information, images, and reviews.
+ *
+ * @component
+ * @async
+ * @param {Object} props - The component props.
+ * @param {Object} props.params - The route parameters.
+ * @param {string} props.params.id - The product ID from the URL.
+ * @returns {Promise<JSX.Element>} The product detail page component.
+ *
+ * @example
+ * // Example usage:
+ * const params = { id: '123' };
+ * <ProductPage params={params} />
+ */
 export default async function ProductPage({ params }) {
   const product = await fetchProductData(params.id);
 

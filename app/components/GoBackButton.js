@@ -1,6 +1,22 @@
 "use client";
 
+/**
+ * GoBackButton component provides a button that, when clicked, navigates the user back to the previous page.
+ * This is done by calling `window.history.back()` to move one step back in the browser's history stack.
+ *
+ * @component
+ *
+ * @example
+ * // Example usage:
+ * <GoBackButton />
+ *
+ * @returns {JSX.Element} A button that triggers the browser's back navigation.
+ */
 const GoBackButton = () => {
+  /**
+   * Navigates the user to the previous page in their browser history.
+   * Triggered by clicking the "Go Back" button.
+   */
   const goBack = () => {
     window.history.back();
   };
