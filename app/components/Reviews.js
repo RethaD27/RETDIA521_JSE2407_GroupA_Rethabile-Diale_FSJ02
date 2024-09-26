@@ -12,7 +12,7 @@
 export default function Reviews({ reviews }) {
   const renderStars = (rating) => {
     return (
-      <div className="flex text-yellow-400">
+      <div className="flex text-yellow-400" aria-label={`Rating: ${rating} out of 5`}>
         {[...Array(5)].map((_, i) => (
           <span key={i} className={`text-2xl ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}>
             ★
@@ -30,12 +30,19 @@ export default function Reviews({ reviews }) {
           className="bg-white rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <span className="font-semibold text-lg text-indigo-700 mb-2 sm:mb-0">{review.reviewerName}</span>
-            <span className="text-sm text-purple-600">{new Date(review.date).toLocaleDateString()}</span>
+            <span className="font-semibold text-lg text-indigo-700 mb-2 sm:mb-0">
+              {review.reviewerName}
+            </span>
+            <span className="text-sm text-purple-600">
+              {/* Format date consistently using locale */}
+              {new Date(review.date).toLocaleDateString('en-GB')}
+            </span>
           </div>
           <div className="flex items-center mb-4">
             {renderStars(review.rating)}
-            <span className="ml-2 text-purple-700 font-semibold">{review.rating} / 5</span>
+            <span className="ml-2 text-purple-700 font-semibold">
+              {review.rating} / 5
+            </span>
           </div>
           <p className="text-gray-700 leading-relaxed">{review.comment}</p>
         </div>
