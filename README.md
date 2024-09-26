@@ -47,6 +47,7 @@ This project leverages modern web technologies to build a high-performance and r
 ```
 ├── components
 │   ├── FilterSort.js          // Handles product filtering and sorting
+|   ├── GoBackButton.js        // Provides a button to navigate back to the previous page
 │   ├── Header.js              // Contains the main header and navigation
 │   ├── ImageGallery.js        // Displays product images with a carousel-like effect
 │   ├── Pagination.js          // Handles pagination logic and UI
@@ -55,6 +56,7 @@ This project leverages modern web technologies to build a high-performance and r
 ├── pages
 │   ├── index.js               // Main page with product listings, filtering, sorting, and pagination
 │   ├── product/[id].js        // Product detail page
+|   ├── ReviewsSection.js      // Detailed reviews section for product details page
 ├── public                     // Contains static assets like images
 ├── styles
 │   └── globals.css            // Global styles using Tailwind CSS
