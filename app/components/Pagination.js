@@ -9,19 +9,18 @@ import Link from 'next/link';
  * @param {boolean} [props.hasMore=true] - (Optional) Indicates if there are more pages available, used for dynamic content.
  * @returns {JSX.Element} The Pagination component.
  */
-export default function Pagination({ currentPage, totalPages, hasMore = true }) {
-  const generatePageLink = (page) => `/?page=${page}`;
+export default function Pagination({ currentPage, onPageChange,totalPages, hasMore = true }) {
 
   return (
     <div className="flex justify-center items-center space-x-4 my-12">
       {/* Previous Link */}
       {currentPage > 1 && (
-        <Link 
-          href={generatePageLink(currentPage - 1)} 
+        <button
+        onClick={()=>onPageChange (currentPage - 1)}  
           className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
         >
           ← Previous
-        </Link>
+        </button>
       )}
 
       {/* Page indicator */}
@@ -29,12 +28,12 @@ export default function Pagination({ currentPage, totalPages, hasMore = true }) 
 
       {/* Next Link */}
       {(currentPage < totalPages || hasMore) && (
-        <Link 
-          href={generatePageLink(currentPage + 1)} 
+        <button 
+          onClick={()=>onPageChange (currentPage + 1)} 
           className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
         >
           Next →
-        </Link>
+        </button>
       )}
     </div>
   );
