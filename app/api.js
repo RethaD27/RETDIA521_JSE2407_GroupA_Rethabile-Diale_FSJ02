@@ -37,7 +37,7 @@ export const fetchProducts = cache(async (params = {}) => {
     search,
     category,
     sortBy,
-    sortOrder,
+    order: sortOrder,
   });
 
   const response = await fetch(`${API_BASE_URL}/products?${queryParams}`, { next: { revalidate: 60 } });
