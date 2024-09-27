@@ -84,12 +84,6 @@ export default async function ProductPage({ params }) {
             <p className="text-gray-700 mb-6 text-lg leading-relaxed">
               {product.description}
             </p>
-            <p className="text-sm text-gray-600 mb-2">
-              Category:{' '}
-              <span className="font-semibold text-indigo-700">
-                {product.category}
-              </span>
-            </p>
             <div className="mb-4 flex flex-wrap">
               {product.tags.map((tag, index) => (
                 <span
